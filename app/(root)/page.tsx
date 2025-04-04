@@ -1,6 +1,7 @@
 import InterviewCard from '@/components/InterviewCard';
 import { Button } from '@/components/ui/button';
-import { getCurrentUser, getInterviewsByUserId, getLatestInterviews } from '@/lib/actions/auth.action';
+import { getCurrentUser} from '@/lib/actions/auth.action';
+import {getInterviewsByUserId, getLatestInterviews } from '@/lib/actions/general.action';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react'
@@ -8,18 +9,13 @@ import React from 'react'
 const Page = async () => {
   const user = await getCurrentUser();
 
-  if (!user?.id) {
-    // Handle the case when there is no current user
-    return <p>No user logged in.</p>;
-  }
-
   const [userInterviews, latestInterviews] = await Promise.all([
-    await getInterviewsByUserId(user.id),
-    await getLatestInterviews({userId: user.id})
+    await getInterviewsByUserId(user?.id!),
+    await getLatestInterviews({userId: user?.id!})
   ]);
 
-  const hasPastInterviews = userInterviews.length > 0;
-  const hasUpcomingInterviews = latestInterviews.length > 0;
+  const hasPastInterviews = userInterviews?.length > 0;
+  const hasUpcomingInterviews = latestInterviews?.length > 0;
 
 
   return (
